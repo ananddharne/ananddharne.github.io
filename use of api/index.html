@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Vue Test</title>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css' />
+  </head>
+  <body>
+
+    <div id="app">
+      <h1>{{ message }}</h1>
+      <div>
+        <h3 v-if="post.id">Post #{{post.id}}</h3>
+        <span>{{post.title}}</span>
+        
+        <ul>
+          <h3 v-if="cache">Posts loaded</h3>
+
+          <li v-for="post in cache">
+            # {{post.id}} - {{ post.title }}
+          </li>
+        </ul>
+      </div>
+      <button v-on:click="previousPost">Previous Post</button> <!-- // new vue directive - v-on:click, also  -->
+      <button v-on:click="nextPost">Next Post</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.js"></script>
+    <script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+
+    <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        message: 'Welcome to Vue!',
+        post: {},
+        page: 1,
+        cache: {},
+      },
+      mounted: function() {
+        this.getPost()
+      },
+      methods: {
+        nextPost: function() {
+          
+          this.page = this.page + 1 
+          
+          this.getPost()
+         
+         
+          
+          // Implement me
+        },
+        previousPost: function() {
+          // Implement me
+          this.page = this.page - 1
+          this.getPost()
+        
+        
+        },
+        getPost: function() {
+          var root = 'https://jsonplaceholder.typicode.com';
+          var cached = this.cache[this.page];
+            
+          if (cached) {
+            this.post = cached;
+            return;
+          }
+          $.ajax({
+            url: root + '/posts/' + this.page,
+            method: 'GET'
+          })
+          .then((data) => {
+            console.log(data);
+            this.post = data;
+            this.cache[data.id] = data;
+          });
+        }
+      }
+    })
+    </script>
+
+    <style>
+      /* Add any additional styles here */
+      body {
+        padding: 20px;
+      }
+      div {
+        margin: 12px 0;
+      }
+    </style>
+
+
+  </body>
+</html>
